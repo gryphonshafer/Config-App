@@ -482,7 +482,9 @@ configuration.
 
 L<URI>, L<LWP::UserAgent>, L<Carp>, L<FindBin>, L<JSON::XS>, L<YAML::XS>, L<POSIX>.
 
-You can also look for additional information at:
+=head1 SEE ALSO
+
+You can look for additional information at:
 
 =for :list
 * L<GitHub|https://github.com/gryphonshafer/Config-App>

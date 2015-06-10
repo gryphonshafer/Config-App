@@ -4,7 +4,7 @@ Config::App - Cascading merged application configuration
 
 # VERSION
 
-version 1.01
+version 1.02
 
 [![Build Status](https://travis-ci.org/gryphonshafer/Config-App.svg)](https://travis-ci.org/gryphonshafer/Config-App)
 [![Coverage Status](https://coveralls.io/repos/gryphonshafer/Config-App/badge.png)](https://coveralls.io/r/gryphonshafer/Config-App)
@@ -262,7 +262,9 @@ configuration.
 
 [URI](https://metacpan.org/pod/URI), [LWP::UserAgent](https://metacpan.org/pod/LWP::UserAgent), [Carp](https://metacpan.org/pod/Carp), [FindBin](https://metacpan.org/pod/FindBin), [JSON::XS](https://metacpan.org/pod/JSON::XS), [YAML::XS](https://metacpan.org/pod/YAML::XS), [POSIX](https://metacpan.org/pod/POSIX).
 
-You can also look for additional information at:
+# SEE ALSO
+
+You can look for additional information at:
 
 - [GitHub](https://github.com/gryphonshafer/Config-App)
 - [CPAN](http://search.cpan.org/dist/Config-App)
