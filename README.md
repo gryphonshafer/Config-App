@@ -4,7 +4,7 @@ Config::App - Cascading merged application configuration
 
 # VERSION
 
-version 1.02
+version 1.03
 
 [![Build Status](https://travis-ci.org/gryphonshafer/Config-App.svg)](https://travis-ci.org/gryphonshafer/Config-App)
 [![Coverage Status](https://coveralls.io/repos/gryphonshafer/Config-App/badge.png)](https://coveralls.io/r/gryphonshafer/Config-App)
@@ -12,6 +12,8 @@ version 1.02
 # SYNOPSIS
 
     use Config::App;
+    use Config::App 'lib';
+    use Config::App ();
 
     # looks for initial conf file "config/app.yaml" at or above cwd
     my $conf = Config::App->new;
@@ -258,6 +260,19 @@ configuration.
         change => { some => { conf => 1138 } }
     });
 
+# LIBRARY DIRECTORY INJECTION
+
+By default, the call to use the library will result in the "lib" subdirectory
+from the found root directory being unshifted to @INC. You can also stipulate
+a directory alternative from "lib" in the use line.
+
+    use Config::App;        # add "root_dir/lib"  to @INC
+    use Config::App 'lib2'; # add "root_dir/lib2" to @INC
+
+To skip this behavior, do this:
+
+    use Config::App ();
+
 # DIRECT DEPENDENCIES
 
 [URI](https://metacpan.org/pod/URI), [LWP::UserAgent](https://metacpan.org/pod/LWP::UserAgent), [Carp](https://metacpan.org/pod/Carp), [FindBin](https://metacpan.org/pod/FindBin), [JSON::XS](https://metacpan.org/pod/JSON::XS), [YAML::XS](https://metacpan.org/pod/YAML::XS), [POSIX](https://metacpan.org/pod/POSIX).
@@ -277,7 +292,7 @@ You can look for additional information at:
 
 # AUTHOR
 
-Gryphon Shafer <gryphon@cpan.org>
+Gryphon Shafer &lt;gryphon@cpan.org>
 
 # COPYRIGHT AND LICENSE
 

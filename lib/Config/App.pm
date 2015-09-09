@@ -16,6 +16,17 @@ use POSIX ();
 
 $Carp::Internal{ (__PACKAGE__) }++;
 
+sub _location {
+    return $ENV{CONFIGAPPINIT} || 'config/app.yaml';
+}
+
+sub import {
+    my ( $self, $lib_dir, $location ) = @_;
+    my ( $root_dir, $config_file ) = _find_root_dir( $location || _location() );
+    unshift( @INC, $root_dir . '/' . ( $lib_dir || 'lib' ) ) if ( -f $config_file );
+    return;
+}
+
 {
     my $singleton;
 
@@ -23,7 +34,7 @@ $Carp::Internal{ (__PACKAGE__) }++;
         my ( $self, $location, $no_singleton ) = @_;
         return $singleton if ( not $no_singleton and $singleton );
 
-        $location ||= $ENV{CONFIGAPPINIT} || 'config/app.yaml';
+        $location ||= _location();
 
         ( my $box = ( POSIX::uname )[1] ) =~ s/\..*$//;
         my $user  = getpwuid($>) || POSIX::cuserid;
@@ -127,15 +138,7 @@ sub _get_raw_config {
         }
     }
     else {
-        my ( $root_dir, $config_file );
-
-        my @search_path = split( '/', $FindBin::Bin );
-        while ( @search_path > 1 ) {
-            $root_dir = join( '/', @search_path );
-            $config_file = $root_dir . '/' . $location;
-            last if ( -f $config_file );
-            pop @search_path;
-        }
+        my ( $root_dir, $config_file ) = _find_root_dir($location);
 
         croak 'Failed to find ' . join( ' -> ', map { "\"$_\"" } @source_path, $location )
             unless ( -f $config_file );
@@ -143,6 +146,22 @@ sub _get_raw_config {
         open( my $config_fh, '<', $config_file ) or croak "Failed to read $config_file; $!";
         return join( '', <$config_fh> ), $root_dir;
     }
+}
+
+sub _find_root_dir {
+    my ($location) = @_;
+    $location ||= location();
+    my ( $root_dir, $config_file );
+
+    my @search_path = split( '/', $FindBin::Bin );
+    while ( @search_path > 1 ) {
+        $root_dir = join( '/', @search_path );
+        $config_file = $root_dir . '/' . $location;
+        last if ( -f $config_file );
+        pop @search_path;
+    }
+
+    return $root_dir, $config_file;
 }
 
 {
@@ -232,6 +251,8 @@ __END__
 =head1 SYNOPSIS
 
     use Config::App;
+    use Config::App 'lib';
+    use Config::App ();
 
     # looks for initial conf file "config/app.yaml" at or above cwd
     my $conf = Config::App->new;
@@ -477,6 +498,19 @@ configuration.
     my $new_full_conf_as_data_structure = $conf->conf({
         change => { some => { conf => 1138 } }
     });
+
+=head1 LIBRARY DIRECTORY INJECTION
+
+By default, the call to use the library will result in the "lib" subdirectory
+from the found root directory being unshifted to @INC. You can also stipulate
+a directory alternative from "lib" in the use line.
+
+    use Config::App;        # add "root_dir/lib"  to @INC
+    use Config::App 'lib2'; # add "root_dir/lib2" to @INC
+
+To skip this behavior, do this:
+
+    use Config::App ();
 
 =head1 DIRECT DEPENDENCIES
 
