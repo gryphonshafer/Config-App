@@ -4,7 +4,7 @@ Config::App - Cascading merged application configuration
 
 # VERSION
 
-version 1.03
+version 1.04
 
 [![Build Status](https://travis-ci.org/gryphonshafer/Config-App.svg)](https://travis-ci.org/gryphonshafer/Config-App)
 [![Coverage Status](https://coveralls.io/repos/gryphonshafer/Config-App/badge.png)](https://coveralls.io/r/gryphonshafer/Config-App)
@@ -116,6 +116,13 @@ mean the sub-file is always included.
         database:
             password: other
     include: gryphon_settings.yaml
+
+### Optional Configuration File Including
+
+Normally, if you "include" a location that doesn't exist, you'll get an error.
+However, if you replace the "include" key word with "optional\_include", then
+the location will be included if it exists and silently bypassed if it doesn't
+exist.
 
 ## Configuration File Finding
 
@@ -292,7 +299,7 @@ You can look for additional information at:
 
 # AUTHOR
 
-Gryphon Shafer &lt;gryphon@cpan.org>
+Gryphon Shafer <gryphon@cpan.org>
 
 # COPYRIGHT AND LICENSE
 

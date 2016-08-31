@@ -83,6 +83,8 @@ sub _location_fetch {
     my ( $box, $user, $env, $conf, $location, @source_path ) = @_;
 
     my ( $raw_config, $root_dir ) = _get_raw_config( $location, @source_path );
+    return unless ($raw_config);
+
     $conf->{config_app}{root_dir} ||= $root_dir if ($root_dir);
     push( @{ $conf->{config_app}{includes} }, $root_dir . '/' . $location );
 
@@ -112,11 +114,25 @@ sub _location_fetch {
     _location_fetch( $box, $user, $env, $conf, delete( $conf->{include} ), $location, @source_path )
         if ( $conf->{include} );
 
+    _location_fetch( $box, $user, $env, $conf, \$set->{optional_include}, $location, @source_path )
+        if ( $set->{optional_include} );
+
+    if ( $conf->{optional_include} ) {
+        my $optional_include = delete( $conf->{optional_include} );
+        _location_fetch( $box, $user, $env, $conf, \$optional_include, $location, @source_path );
+    }
+
     return;
 }
 
 sub _get_raw_config {
     my ( $location, @source_path ) = @_;
+
+    my $optional = 0;
+    if ( ref $location ) {
+        $location = $$location;
+        $optional = 1;
+    }
 
     if ( URI->new($location)->scheme ) {
         my $ua = LWP::UserAgent->new(
@@ -131,20 +147,32 @@ sub _get_raw_config {
             return $res->decoded_content;
         }
         else {
-            croak 'Failed to get '
-                . join( ' -> ', map { "\"$_\"" } @source_path, $location )
-                . '; '
-                . $res->status_line;
+            unless ($optional) {
+                croak 'Failed to get '
+                    . join( ' -> ', map { "\"$_\"" } @source_path, $location )
+                    . '; '
+                    . $res->status_line;
+            }
+            else {
+                return '', '';
+            }
         }
     }
     else {
         my ( $root_dir, $config_file ) = _find_root_dir($location);
 
-        croak 'Failed to find ' . join( ' -> ', map { "\"$_\"" } @source_path, $location )
-            unless ( -f $config_file );
-
-        open( my $config_fh, '<', $config_file ) or croak "Failed to read $config_file; $!";
-        return join( '', <$config_fh> ), $root_dir;
+        unless ( -f $config_file ) {
+            unless ($optional) {
+                croak 'Failed to find ' . join( ' -> ', map { "\"$_\"" } @source_path, $location );
+            }
+            else {
+                return '', '';
+            }
+        }
+        else {
+            open( my $config_fh, '<', $config_file ) or croak "Failed to read $config_file; $!";
+            return join( '', <$config_fh> ), $root_dir;
+        }
     }
 }
 
@@ -355,6 +383,13 @@ mean the sub-file is always included.
         database:
             password: other
     include: gryphon_settings.yaml
+
+=head3 Optional Configuration File Including
+
+Normally, if you "include" a location that doesn't exist, you'll get an error.
+However, if you replace the "include" key word with "optional_include", then
+the location will be included if it exists and silently bypassed if it doesn't
+exist.
 
 =head2 Configuration File Finding
 
