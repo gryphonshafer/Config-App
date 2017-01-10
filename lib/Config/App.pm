@@ -136,6 +136,10 @@ sub _location_fetch {
         _location_fetch( $box, $user, $env, $conf, \$optional_include, $location, @source_path );
     }
 
+    if ( $conf->{libs} and ref $conf->{libs} eq 'ARRAY' ) {
+        unshift( @INC, $root_dir . "/$_" ) for ( @{ $conf->{libs} } );
+    }
+
     return;
 }
 
@@ -567,6 +571,12 @@ provided.
 To skip all this behavior, do this:
 
     use Config::App ();
+
+=head2 Injection via configuration file setting
+
+You can also inject relative library paths by using the "libs" keyword in the
+base of the configuration, similar to "include". The "libs" keyword expects an
+arrayref of relative paths.
 
 =head1 DIRECT DEPENDENCIES
 
