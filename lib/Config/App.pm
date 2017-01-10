@@ -23,20 +23,21 @@ sub _location {
 sub import {
     my $self = shift;
 
-    my ( $root_dir, $config_file, @libs );
+    my ( $root_dir, $config_file, $location, @libs );
     for (
         ( @_ > 1 )  ? ( $_[0], $_[-1], _location() ) :
         ( @_ == 1 ) ? ( $_[0], _location() )         : _location()
     ) {
         ( $root_dir, $config_file ) = _find_root_dir($_);
         if ( -f $config_file ) {
-            my $location = substr( $config_file, length($root_dir) + 1 );
-            @libs        = grep { $location ne $_ } @_;
+            $location = substr( $config_file, length($root_dir) + 1 );
+            @libs     = grep { $location ne $_ } @_;
             last;
         }
     }
 
     unshift( @INC, $root_dir . "/$_" ) for ( @libs || 'lib' );
+    eval { $self->new($location) };
     return;
 }
 
