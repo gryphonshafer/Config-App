@@ -21,9 +21,22 @@ sub _location {
 }
 
 sub import {
-    my ( $self, $lib_dir, $location ) = @_;
-    my ( $root_dir, $config_file ) = _find_root_dir( $location || _location() );
-    unshift( @INC, $root_dir . '/' . ( $lib_dir || 'lib' ) ) if ( -f $config_file );
+    my $self = shift;
+
+    my ( $root_dir, $config_file, @libs );
+    for (
+        ( @_ > 1 )  ? ( $_[0], $_[-1], _location() ) :
+        ( @_ == 1 ) ? ( $_[0], _location() )         : _location()
+    ) {
+        ( $root_dir, $config_file ) = _find_root_dir($_);
+        if ( -f $config_file ) {
+            my $location = substr( $config_file, length($root_dir) + 1 );
+            @libs        = grep { $location ne $_ } @_;
+            last;
+        }
+    }
+
+    unshift( @INC, $root_dir . "/$_" ) for ( @libs || 'lib' );
     return;
 }
 
@@ -543,7 +556,14 @@ a directory alternative from "lib" in the use line.
     use Config::App;        # add "root_dir/lib"  to @INC
     use Config::App 'lib2'; # add "root_dir/lib2" to @INC
 
-To skip this behavior, do this:
+You can also supply multiple library directories and a specific configuration
+file location relative to your project's root directory. If you specify a
+relative configuration file location, it must be either the first or last value
+provided.
+
+    use Config::App qw( lib lib2 config.yaml );
+
+To skip all this behavior, do this:
 
     use Config::App ();
 
