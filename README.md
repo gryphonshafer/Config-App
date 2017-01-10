@@ -4,7 +4,7 @@ Config::App - Cascading merged application configuration
 
 # VERSION
 
-version 1.04
+version 1.05
 
 [![Build Status](https://travis-ci.org/gryphonshafer/Config-App.svg)](https://travis-ci.org/gryphonshafer/Config-App)
 [![Coverage Status](https://coveralls.io/repos/gryphonshafer/Config-App/badge.png)](https://coveralls.io/r/gryphonshafer/Config-App)
@@ -276,9 +276,22 @@ a directory alternative from "lib" in the use line.
     use Config::App;        # add "root_dir/lib"  to @INC
     use Config::App 'lib2'; # add "root_dir/lib2" to @INC
 
-To skip this behavior, do this:
+You can also supply multiple library directories and a specific configuration
+file location relative to your project's root directory. If you specify a
+relative configuration file location, it must be either the first or last value
+provided.
+
+    use Config::App qw( lib lib2 config.yaml );
+
+To skip all this behavior, do this:
 
     use Config::App ();
+
+## Injection via configuration file setting
+
+You can also inject relative library paths by using the "libs" keyword in the
+base of the configuration, similar to "include". The "libs" keyword expects an
+arrayref of relative paths.
 
 # DIRECT DEPENDENCIES
 

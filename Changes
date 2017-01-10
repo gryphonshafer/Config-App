@@ -1,6 +1,9 @@
 Revision history for Config::App
 
 {{$NEXT}}
+        - import() accepts multiple library dirs
+        - import() gracefully calls new()
+        - Support for the "libs" configuration keyword
 
 1.04      2016-08-31 08:26:11-07:00 America/Los_Angeles
         - Add "optional_include" keyword functionality
