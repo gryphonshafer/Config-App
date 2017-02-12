@@ -1,6 +1,7 @@
 package Config::App;
 # ABSTRACT: Cascading merged application configuration
 
+use 5.008;
 use strict;
 use warnings;
 
