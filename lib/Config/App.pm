@@ -61,6 +61,13 @@ sub import {
         $self = bless( { _conf => $conf }, $self );
         $singleton = $self unless ($no_singleton);
 
+        if ( my $libs = $self->get('libs') ) {
+            $libs        = [$libs] if ( ref $libs ne 'ARRAY' );
+            my $root_dir = $self->get( qw( config_app root_dir ) );
+
+            unshift( @INC, $root_dir . "/$_" ) for (@$libs);
+        }
+
         return $self;
     }
 }
@@ -135,10 +142,6 @@ sub _location_fetch {
     if ( $conf->{optional_include} ) {
         my $optional_include = delete( $conf->{optional_include} );
         _location_fetch( $box, $user, $env, $conf, \$optional_include, $location, @source_path );
-    }
-
-    if ( $conf->{libs} and ref $conf->{libs} eq 'ARRAY' ) {
-        unshift( @INC, $root_dir . "/$_" ) for ( @{ $conf->{libs} } );
     }
 
     return;
@@ -575,9 +578,10 @@ To skip all this behavior, do this:
 
 =head2 Injection via configuration file setting
 
-You can also inject relative library paths by using the "libs" keyword in the
-base of the configuration, similar to "include". The "libs" keyword expects an
-arrayref of relative paths.
+You can also inject a relative library path or set of paths by using the "libs"
+keyword in the configuration file. The "libs" keyword should have either an
+arrayref of relative paths or a string of a single relative path, relative to
+the project's root directory.
 
 =head1 DIRECT DEPENDENCIES
 

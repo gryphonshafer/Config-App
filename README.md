@@ -289,9 +289,10 @@ To skip all this behavior, do this:
 
 ## Injection via configuration file setting
 
-You can also inject relative library paths by using the "libs" keyword in the
-base of the configuration, similar to "include". The "libs" keyword expects an
-arrayref of relative paths.
+You can also inject a relative library path or set of paths by using the "libs"
+keyword in the configuration file. The "libs" keyword should have either an
+arrayref of relative paths or a string of a single relative path, relative to
+the project's root directory.
 
 # DIRECT DEPENDENCIES
 
