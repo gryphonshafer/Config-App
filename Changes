@@ -1,6 +1,7 @@
 Revision history for Config::App
 
 {{$NEXT}}
+        - Returned complex data structures are copies not refs to original data
 
 1.06      2018-06-15 16:03:13-07:00 America/Los_Angeles
         - Adding Perl versions to test; annual general update for 2018

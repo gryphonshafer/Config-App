@@ -77,7 +77,7 @@ sub get {
     my $data = $self->{_conf};
 
     $data = $data->{$_} for (@_);
-    return $data;
+    return _clone($data);
 }
 
 sub put {
@@ -98,7 +98,11 @@ sub put {
 sub conf {
     my $self = shift;
     _merge_settings( $self->{_conf}, $_ ) for (@_);
-    return $self->{_conf};
+    return _clone( $self->{_conf} );
+}
+
+sub _clone {
+    return YAML::XS::Load( YAML::XS::Dump(@_) );
 }
 
 sub _location_fetch {
