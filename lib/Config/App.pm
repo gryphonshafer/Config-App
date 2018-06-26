@@ -278,13 +278,18 @@ sub _merge_settings {
     my ( $merge, $source ) = @_;
     return unless $source;
 
-    for my $key ( keys %{$source} ) {
-        if ( exists $merge->{$key} and ref( $merge->{$key} ) eq 'HASH' ) {
-            _merge_settings( $merge->{$key}, $source->{$key} );
+    if ( ref $merge eq 'HASH' ) {
+        for my $key ( keys %{$source} ) {
+            if ( exists $merge->{$key} and ref $merge->{$key} eq 'HASH' and ref $source->{$key} eq 'HASH' ) {
+                _merge_settings( $merge->{$key}, $source->{$key} );
+            }
+            else {
+                $merge->{$key} = _clone( $source->{$key} );
+            }
         }
-        else {
-            $merge->{$key} = $source->{$key};
-        }
+    }
+    elsif ( ref $merge eq 'ARRAY' ) {
+        push( @$source, @$merge );
     }
 
     return;
