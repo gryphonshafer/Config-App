@@ -112,7 +112,10 @@ sub _location_fetch {
     return unless ($raw_config);
 
     $conf->{config_app}{root_dir} ||= $root_dir if ($root_dir);
-    push( @{ $conf->{config_app}{includes} }, $root_dir . '/' . $location );
+    push(
+        @{ $conf->{config_app}{includes} },
+        $root_dir . '/' . ( ( ref $location ) ? $$location : $location ),
+    );
 
     my $set = _parse_config( $raw_config, $location, @source_path );
 

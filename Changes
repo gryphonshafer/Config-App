@@ -1,6 +1,7 @@
 Revision history for Config::App
 
 {{$NEXT}}
+        - Fix bug in reporting of optional includes in conf dump
 
 1.07      2018-06-26 16:43:37-07:00 America/Los_Angeles
         - Returned complex data structures are copies not refs to original data
