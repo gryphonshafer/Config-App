@@ -1,6 +1,8 @@
 Revision history for Config::App
 
 {{$NEXT}}
+
+1.11      2019-04-02 11:03:41-07:00 America/Los_Angeles
         - Fix name of regression test
 
 1.10      2019-04-02 11:01:31-07:00 America/Los_Angeles
