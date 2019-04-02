@@ -1,6 +1,7 @@
 Revision history for Config::App
 
 {{$NEXT}}
+        - Throw errors and stop on invalid parsing of configuration files
 
 1.09      2018-10-02 07:14:34-07:00 America/Los_Angeles
         - Fix for include file recusions to warn and continue
