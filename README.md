@@ -4,7 +4,7 @@ Config::App - Cascading merged application configuration
 
 # VERSION
 
-version 1.10
+version 1.11
 
 [![Build Status](https://travis-ci.org/gryphonshafer/Config-App.svg)](https://travis-ci.org/gryphonshafer/Config-App)
 [![Coverage Status](https://coveralls.io/repos/gryphonshafer/Config-App/badge.png)](https://coveralls.io/r/gryphonshafer/Config-App)

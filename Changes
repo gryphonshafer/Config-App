@@ -1,6 +1,7 @@
 Revision history for Config::App
 
 {{$NEXT}}
+        - Fix name of regression test
 
 1.10      2019-04-02 11:01:31-07:00 America/Los_Angeles
         - Throw errors and stop on invalid parsing of configuration files
