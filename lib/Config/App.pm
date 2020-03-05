@@ -622,9 +622,7 @@ You can look for additional information at:
 
 =for :list
 * L<GitHub|https://github.com/gryphonshafer/Config-App>
-* L<CPAN|http://search.cpan.org/dist/Config-App>
 * L<MetaCPAN|https://metacpan.org/pod/Config::App>
-* L<AnnoCPAN|http://annocpan.org/dist/Config-App>
 * L<Travis CI|https://travis-ci.org/gryphonshafer/Config-App>
 * L<Coveralls|https://coveralls.io/r/gryphonshafer/Config-App>
 * L<CPANTS|http://cpants.cpanauthors.org/dist/Config-App>
