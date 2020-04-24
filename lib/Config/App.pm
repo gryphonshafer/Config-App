@@ -139,6 +139,19 @@ sub _location_fetch {
 
     my $set = _parse_config( $raw_config, $location, @source_path );
 
+    my $location_fetch = sub { _location_fetch( $box, $user, $env, $conf, $_[0], $location, @source_path ) };
+    my $fetch_block    = sub {
+        my $include  = ( ( $_[0] ) ? 'pre' : '' ) . 'include';
+        my $optional = 'optional_' . $include;
+
+        $location_fetch->( $set->{$include}               ) if ( $set->{$include}   );
+        $location_fetch->( delete( $conf->{$include} )    ) if ( $conf->{$include}  );
+        $location_fetch->( \$set->{$optional}             ) if ( $set->{$optional}  );
+        $location_fetch->( \ delete( $conf->{$optional} ) ) if ( $conf->{$optional} );
+    };
+
+    $fetch_block->(1);
+
     _merge_settings( $conf, $_ ) for (
         grep { defined } (
             map {
@@ -157,19 +170,7 @@ sub _location_fetch {
         )
     );
 
-    _location_fetch( $box, $user, $env, $conf, $set->{include}, $location, @source_path )
-        if ( $set->{include} );
-
-    _location_fetch( $box, $user, $env, $conf, delete( $conf->{include} ), $location, @source_path )
-        if ( $conf->{include} );
-
-    _location_fetch( $box, $user, $env, $conf, \$set->{optional_include}, $location, @source_path )
-        if ( $set->{optional_include} );
-
-    if ( $conf->{optional_include} ) {
-        my $optional_include = delete( $conf->{optional_include} );
-        _location_fetch( $box, $user, $env, $conf, \$optional_include, $location, @source_path );
-    }
+    $fetch_block->();
 
     return;
 }
@@ -441,6 +442,15 @@ Normally, if you "include" a location that doesn't exist, you'll get an error.
 However, if you replace the "include" key word with "optional_include", then
 the location will be included if it exists and silently bypassed if it doesn't
 exist.
+
+=head3 Pre-Including Configuration Files
+
+When you "include" or "optional_include" configuration files, the included file
+or files are included after reading of the current or source configuration file.
+Thus, any data in included files will overwrite data in the current or source
+configuration file. If you want this reversed, with data in the current or
+source configuration file  overwriting data in any included files, use
+"preinclude" and "optional_preinclude" respectively.
 
 =head2 Configuration File Finding
 
