@@ -4,7 +4,7 @@ Config::App - Cascading merged application configuration
 
 # VERSION
 
-version 1.11
+version 1.12
 
 [![Build Status](https://travis-ci.org/gryphonshafer/Config-App.svg)](https://travis-ci.org/gryphonshafer/Config-App)
 [![Coverage Status](https://coveralls.io/repos/gryphonshafer/Config-App/badge.png)](https://coveralls.io/r/gryphonshafer/Config-App)
@@ -123,6 +123,15 @@ Normally, if you "include" a location that doesn't exist, you'll get an error.
 However, if you replace the "include" key word with "optional\_include", then
 the location will be included if it exists and silently bypassed if it doesn't
 exist.
+
+### Pre-Including Configuration Files
+
+When you "include" or "optional\_include" configuration files, the included file
+or files are included after reading of the current or source configuration file.
+Thus, any data in included files will overwrite data in the current or source
+configuration file. If you want this reversed, with data in the current or
+source configuration file  overwriting data in any included files, use
+"preinclude" and "optional\_preinclude" respectively.
 
 ## Configuration File Finding
 
@@ -296,16 +305,14 @@ the project's root directory.
 
 # DIRECT DEPENDENCIES
 
-[URI](https://metacpan.org/pod/URI), [LWP::UserAgent](https://metacpan.org/pod/LWP::UserAgent), [Carp](https://metacpan.org/pod/Carp), [FindBin](https://metacpan.org/pod/FindBin), [JSON::XS](https://metacpan.org/pod/JSON::XS), [YAML::XS](https://metacpan.org/pod/YAML::XS), [POSIX](https://metacpan.org/pod/POSIX).
+[URI](https://metacpan.org/pod/URI), [LWP::UserAgent](https://metacpan.org/pod/LWP%3A%3AUserAgent), [Carp](https://metacpan.org/pod/Carp), [FindBin](https://metacpan.org/pod/FindBin), [JSON::XS](https://metacpan.org/pod/JSON%3A%3AXS), [YAML::XS](https://metacpan.org/pod/YAML%3A%3AXS), [POSIX](https://metacpan.org/pod/POSIX).
 
 # SEE ALSO
 
 You can look for additional information at:
 
 - [GitHub](https://github.com/gryphonshafer/Config-App)
-- [CPAN](http://search.cpan.org/dist/Config-App)
 - [MetaCPAN](https://metacpan.org/pod/Config::App)
-- [AnnoCPAN](http://annocpan.org/dist/Config-App)
 - [Travis CI](https://travis-ci.org/gryphonshafer/Config-App)
 - [Coveralls](https://coveralls.io/r/gryphonshafer/Config-App)
 - [CPANTS](http://cpants.cpanauthors.org/dist/Config-App)
@@ -317,7 +324,7 @@ Gryphon Shafer <gryphon@cpan.org>
 
 # COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2018 by Gryphon Shafer.
+This software is copyright (c) 2020 by Gryphon Shafer.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
