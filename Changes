@@ -1,6 +1,7 @@
 Revision history for Config::App
 
 {{$NEXT}}
+        - "libs" from included files are all appended not overwritten
         - Support for preinclude and optional_preinclude
         - Update Travis YAML
 

@@ -21,6 +21,13 @@ sub _location {
     return $ENV{CONFIGAPPINIT} || 'config/app.yaml';
 }
 
+sub _add_to_inc {
+    my ( $root_dir, @libs ) = @_;
+    for my $lib ( map { $root_dir . '/' . $_ } @libs ) {
+        unshift( @INC, $lib ) unless ( grep { $_ eq $lib } @INC );
+    }
+}
+
 sub import {
     my $self = shift;
 
@@ -37,7 +44,7 @@ sub import {
         }
     }
 
-    unshift( @INC, $root_dir . "/$_" ) for ( @libs || 'lib' );
+    _add_to_inc( $root_dir, ( @libs || 'lib' ) );
 
     my $error = do {
         local $@;
@@ -71,10 +78,10 @@ sub import {
         $singleton = $self unless ($no_singleton);
 
         if ( my $libs = $self->get('libs') ) {
-            $libs        = [$libs] if ( ref $libs ne 'ARRAY' );
-            my $root_dir = $self->get( qw( config_app root_dir ) );
-
-            unshift( @INC, $root_dir . "/$_" ) for (@$libs);
+            _add_to_inc(
+                $self->get( qw( config_app root_dir ) ),
+                ( ref $libs eq 'ARRAY' ) ? @$libs : $libs,
+            );
         }
 
         return $self;
@@ -296,13 +303,29 @@ sub _find_root_dir {
 }
 
 sub _merge_settings {
-    my ( $merge, $source ) = @_;
+    my ( $merge, $source, $is_deep_call ) = @_;
     return unless $source;
+
+    if ( not $is_deep_call and ref $merge eq 'HASH' and ref $source eq 'HASH' ) {
+        if ( my $libs = delete $source->{libs} ) {
+            if ( not exists $merge->{libs} ) {
+                $merge->{libs} = $libs;
+            }
+            elsif ( ref $merge->{libs} eq 'ARRAY' ) {
+                my %libs = map { $_ => 1 } @{ $merge->{libs} }, ( ref $libs eq 'ARRAY' ) ? @$libs : $libs;
+                $merge->{libs} = [ sort keys %libs ];
+            }
+            else {
+                my %libs = map { $_ => 1 } $merge->{libs}, ( ref $libs eq 'ARRAY' ) ? @$libs : $libs;
+                $merge->{libs} = [ sort keys %libs ];
+            }
+        }
+    }
 
     if ( ref $merge eq 'HASH' ) {
         for my $key ( keys %{$source} ) {
             if ( exists $merge->{$key} and ref $merge->{$key} eq 'HASH' and ref $source->{$key} eq 'HASH' ) {
-                _merge_settings( $merge->{$key}, $source->{$key} );
+                _merge_settings( $merge->{$key}, $source->{$key}, 1 );
             }
             else {
                 $merge->{$key} = _clone( $source->{$key} );
