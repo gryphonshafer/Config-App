@@ -4,10 +4,10 @@ Config::App - Cascading merged application configuration
 
 # VERSION
 
-version 1.12
+version 1.13
 
-[![Build Status](https://travis-ci.org/gryphonshafer/Config-App.svg)](https://travis-ci.org/gryphonshafer/Config-App)
-[![Coverage Status](https://coveralls.io/repos/gryphonshafer/Config-App/badge.png)](https://coveralls.io/r/gryphonshafer/Config-App)
+[![build](https://github.com/gryphonshafer/Config-App/workflows/build/badge.svg)](https://github.com/gryphonshafer/Config-App/actions?query=workflow%3Abuild)
+[![codecov](https://codecov.io/gh/gryphonshafer/Config-App/graph/badge.svg)](https://codecov.io/gh/gryphonshafer/Config-App)
 
 # SYNOPSIS
 
@@ -313,8 +313,8 @@ You can look for additional information at:
 
 - [GitHub](https://github.com/gryphonshafer/Config-App)
 - [MetaCPAN](https://metacpan.org/pod/Config::App)
-- [Travis CI](https://travis-ci.org/gryphonshafer/Config-App)
-- [Coveralls](https://coveralls.io/r/gryphonshafer/Config-App)
+- [GitHub Actions](https://github.com/gryphonshafer/Config-App/actions)
+- [Codecov](https://codecov.io/gh/gryphonshafer/Config-App)
 - [CPANTS](http://cpants.cpanauthors.org/dist/Config-App)
 - [CPAN Testers](http://www.cpantesters.org/distro/G/Config-App.html)
 
@@ -324,7 +324,7 @@ Gryphon Shafer <gryphon@cpan.org>
 
 # COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2020 by Gryphon Shafer.
+This software is copyright (c) 2021 by Gryphon Shafer.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
