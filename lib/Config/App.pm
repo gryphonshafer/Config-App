@@ -346,8 +346,8 @@ __END__
 =begin :badges
 
 =for markdown
-[![Build Status](https://travis-ci.org/gryphonshafer/Config-App.svg)](https://travis-ci.org/gryphonshafer/Config-App)
-[![Coverage Status](https://coveralls.io/repos/gryphonshafer/Config-App/badge.png)](https://coveralls.io/r/gryphonshafer/Config-App)
+[![build](https://github.com/gryphonshafer/Config-App/workflows/build/badge.svg)](https://github.com/gryphonshafer/Config-App/actions?query=workflow%3Abuild)
+[![codecov](https://codecov.io/gh/gryphonshafer/Config-App/graph/badge.svg)](https://codecov.io/gh/gryphonshafer/Config-App)
 
 =end :badges
 
@@ -656,8 +656,8 @@ You can look for additional information at:
 =for :list
 * L<GitHub|https://github.com/gryphonshafer/Config-App>
 * L<MetaCPAN|https://metacpan.org/pod/Config::App>
-* L<Travis CI|https://travis-ci.org/gryphonshafer/Config-App>
-* L<Coveralls|https://coveralls.io/r/gryphonshafer/Config-App>
+* L<GitHub Actions|https://github.com/gryphonshafer/Config-App/actions>
+* L<Codecov|https://codecov.io/gh/gryphonshafer/Config-App>
 * L<CPANTS|http://cpants.cpanauthors.org/dist/Config-App>
 * L<CPAN Testers|http://www.cpantesters.org/distro/G/Config-App.html>
 
