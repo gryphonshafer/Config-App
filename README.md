@@ -6,7 +6,7 @@ Config::App - Cascading merged application configuration
 
 version 1.13
 
-[![build](https://github.com/gryphonshafer/Config-App/workflows/build/badge.svg)](https://github.com/gryphonshafer/Config-App/actions?query=workflow%3Abuild)
+[![test](https://github.com/gryphonshafer/Config-App/workflows/test/badge.svg)](https://github.com/gryphonshafer/Config-App/actions?query=workflow%3Atest)
 [![codecov](https://codecov.io/gh/gryphonshafer/Config-App/graph/badge.svg)](https://codecov.io/gh/gryphonshafer/Config-App)
 
 # SYNOPSIS
