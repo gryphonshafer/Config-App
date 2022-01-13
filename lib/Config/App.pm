@@ -37,7 +37,11 @@ sub import {
         ( @_ == 1 ) ? ( $_[0], _location() )         : _location()
     ) {
         ( $root_dir, $config_file ) = _find_root_dir($_);
-        if ( -f $config_file ) {
+
+        if ( $root_dir eq '/' ) {
+            $location = $config_file;
+        }
+        elsif ( -f $config_file ) {
             $location = substr( $config_file, length($root_dir) + 1 );
             @libs     = grep { $location ne $_ } @_;
             last;
@@ -54,6 +58,7 @@ sub import {
         $@;
     };
 
+    chomp($error);
     die $error . "\n" if ($error);
     return;
 }
@@ -236,8 +241,9 @@ sub _get_raw_config {
 sub _find_root_dir {
     my ($location) = @_;
     $location ||= location();
-    my ( $root_dir, $config_file );
+    return '/', $location if ( URI->new($location)->scheme or substr( $location, 0, 1 ) eq '/' );
 
+    my ( $root_dir, $config_file );
     my @search_path = split( '/', $FindBin::Bin );
     while ( @search_path > 1 ) {
         $root_dir = join( '/', @search_path );
