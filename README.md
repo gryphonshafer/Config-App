@@ -4,7 +4,7 @@ Config::App - Cascading merged application configuration
 
 # VERSION
 
-version 1.13
+version 1.14
 
 [![test](https://github.com/gryphonshafer/Config-App/workflows/test/badge.svg)](https://github.com/gryphonshafer/Config-App/actions?query=workflow%3Atest)
 [![codecov](https://codecov.io/gh/gryphonshafer/Config-App/graph/badge.svg)](https://codecov.io/gh/gryphonshafer/Config-App)
@@ -15,14 +15,14 @@ version 1.13
     use Config::App 'lib';
     use Config::App ();
 
-    # looks for initial conf file "config/app.yaml" at or above cwd
+    # seeks initial conf file "config/app.yaml" (then others) at or above cwd
     my $conf = Config::App->new;
 
-    # looks for initial conf file "conf/settings.yaml" at or above cwd
+    # seeks initial conf file "conf/settings.yaml" at or above cwd
     $ENV{CONFIGAPPINIT} = 'conf/settings.yaml';
     my $conf2 = Config::App->new;
 
-    # looks for initial conf file "settings/conf.yaml" at or above cwd
+    # seeks initial conf file "settings/conf.yaml" at or above cwd
     my $conf3 = Config::App->new('settings/conf.yaml');
 
     # pulls initial conf file from URL
@@ -200,21 +200,32 @@ The following are the supported methods of this module:
 ## new
 
 The constructor will return an object that can be used to query and alter the
-derived cascaded configuration. By default, with no parameters passed, the
-constructor assumes the initial configuration file is "config/app.yaml".
+derived cascaded configuration.
 
-    # looks for initial conf file "config/app.yaml" at or above cwd
+    # seeks initial conf file "config/app.yaml" (then others) at or above cwd
     my $conf = Config::App->new;
+
+By default, with no parameters passed, the
+constructor assumes the initial configuration file is, in order, one of the
+following:
+
+- `config/app.yaml`
+- `etc/config.yaml`
+- `etc/conf.yaml`
+- `etc/app.yaml`
+- `config.yaml`
+- `conf.yaml`
+- `app.yaml`
 
 You can stipulate an initial configuration file to the constructor:
 
-    # looks for initial conf file "settings/conf.json" at or above cwd
+    # seeks initial conf file "settings/conf.json" at or above cwd
     my $conf = Config::App->new('settings/conf.json');
 
 You can also alternatively set an enviornment variable that will identify the
 initial configuration file:
 
-    # looks for initial conf file "conf/settings.yaml" at or above cwd
+    # seeks initial conf file "conf/settings.yaml" at or above cwd
     $ENV{CONFIGAPPINIT} = 'conf/settings.yaml';
     my $conf = Config::App->new;
 

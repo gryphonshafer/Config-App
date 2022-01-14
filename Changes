@@ -1,6 +1,8 @@
 Revision history for Config::App
 
 {{$NEXT}}
+        - Support abs paths for config files
+        - Add multiple default locations for config files
 
 1.13      2021-01-10 14:07:37-08:00 America/Los_Angeles
         - Migrate to Test2::V0
