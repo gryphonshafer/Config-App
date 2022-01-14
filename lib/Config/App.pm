@@ -17,8 +17,8 @@ use POSIX ();
 
 $Carp::Internal{ (__PACKAGE__) }++;
 
-sub _location {
-    return $ENV{CONFIGAPPINIT} || 'config/app.yaml';
+sub _locations {
+    return grep { length } $ENV{CONFIGAPPINIT}, 'etc/conf.yaml', 'config/app.yaml';
 }
 
 sub _add_to_inc {
@@ -33,8 +33,8 @@ sub import {
 
     my ( $root_dir, $config_file, $location, @libs );
     for (
-        ( @_ > 1 )  ? ( $_[0], $_[-1], _location() ) :
-        ( @_ == 1 ) ? ( $_[0], _location() )         : _location()
+        ( @_ > 1 )  ? ( $_[0], $_[-1], _locations() ) :
+        ( @_ == 1 ) ? ( $_[0], _locations() )         : _locations()
     ) {
         ( $root_dir, $config_file ) = _find_root_dir($_);
 
@@ -70,14 +70,39 @@ sub import {
         my ( $self, $location, $no_singleton ) = @_;
         return $singleton if ( not $no_singleton and $singleton );
 
-        $location ||= _location();
-
         ( my $box = ( POSIX::uname )[1] ) =~ s/\..*$//;
         my $user  = getpwuid($>) || POSIX::cuserid;
         my $env   = $ENV{CONFIGAPPENV};
         my $conf  = {};
 
-        _location_fetch( $box, $user, $env, $conf, $location );
+        if ($location) {
+            _location_fetch( $box, $user, $env, $conf, $location );
+        }
+        else {
+            my ( $success, @errors );
+
+            for my $this_location ( _locations() ) {
+                my $error = do {
+                    local $@;
+                    eval {
+                        _location_fetch( $box, $user, $env, $conf, $this_location );
+                    };
+                    $@;
+                };
+
+                chomp($error);
+                if ($error) {
+                    die $error . "\n" if ( substr( $error, 0, 15 ) ne 'Failed to find ' );
+                    push( @errors, $error );
+                }
+                else {
+                    $success = 1;
+                    last;
+                }
+            }
+
+            die join( ' ', @errors ) unless ($success);
+        }
 
         $self = bless( { _conf => $conf }, $self );
         $singleton = $self unless ($no_singleton);
@@ -363,7 +388,7 @@ __END__
     use Config::App 'lib';
     use Config::App ();
 
-    # looks for initial conf file "config/app.yaml" at or above cwd
+    # looks for initial conf file "etc/conf.yaml" at or above cwd
     my $conf = Config::App->new;
 
     # looks for initial conf file "conf/settings.yaml" at or above cwd
@@ -374,7 +399,7 @@ __END__
     my $conf3 = Config::App->new('settings/conf.yaml');
 
     # pulls initial conf file from URL
-    my $conf4 = Config::App->new('https://example.com/config/app.yaml');
+    my $conf4 = Config::App->new('https://example.com/etc/conf.yaml');
 
     # optional enviornment variable that can alter how cascading works
     $ENV{CONFIGAPPENV} = 'production';
@@ -549,9 +574,10 @@ The following are the supported methods of this module:
 
 The constructor will return an object that can be used to query and alter the
 derived cascaded configuration. By default, with no parameters passed, the
-constructor assumes the initial configuration file is "config/app.yaml".
+constructor assumes the initial configuration file is "etc/conf.yaml" or
+"config/app.yaml" (in that order).
 
-    # looks for initial conf file "config/app.yaml" at or above cwd
+    # looks for initial conf file "etc/conf.yaml" at or above cwd
     my $conf = Config::App->new;
 
 You can stipulate an initial configuration file to the constructor:
