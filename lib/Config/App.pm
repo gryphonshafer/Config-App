@@ -18,7 +18,15 @@ use POSIX ();
 $Carp::Internal{ (__PACKAGE__) }++;
 
 sub _locations {
-    return grep { length } $ENV{CONFIGAPPINIT}, 'etc/conf.yaml', 'config/app.yaml';
+    return grep { length } $ENV{CONFIGAPPINIT}, qw(
+        config/app.yaml
+        etc/config.yaml
+        etc/conf.yaml
+        etc/app.yaml
+        config.yaml
+        conf.yaml
+        app.yaml
+    );
 }
 
 sub _add_to_inc {
@@ -388,18 +396,18 @@ __END__
     use Config::App 'lib';
     use Config::App ();
 
-    # looks for initial conf file "etc/conf.yaml" at or above cwd
+    # seeks initial conf file "config/app.yaml" (then others) at or above cwd
     my $conf = Config::App->new;
 
-    # looks for initial conf file "conf/settings.yaml" at or above cwd
+    # seeks initial conf file "conf/settings.yaml" at or above cwd
     $ENV{CONFIGAPPINIT} = 'conf/settings.yaml';
     my $conf2 = Config::App->new;
 
-    # looks for initial conf file "settings/conf.yaml" at or above cwd
+    # seeks initial conf file "settings/conf.yaml" at or above cwd
     my $conf3 = Config::App->new('settings/conf.yaml');
 
     # pulls initial conf file from URL
-    my $conf4 = Config::App->new('https://example.com/etc/conf.yaml');
+    my $conf4 = Config::App->new('https://example.com/config/app.yaml');
 
     # optional enviornment variable that can alter how cascading works
     $ENV{CONFIGAPPENV} = 'production';
@@ -573,22 +581,33 @@ The following are the supported methods of this module:
 =head2 new
 
 The constructor will return an object that can be used to query and alter the
-derived cascaded configuration. By default, with no parameters passed, the
-constructor assumes the initial configuration file is "etc/conf.yaml" or
-"config/app.yaml" (in that order).
+derived cascaded configuration.
 
-    # looks for initial conf file "etc/conf.yaml" at or above cwd
+    # seeks initial conf file "config/app.yaml" (then others) at or above cwd
     my $conf = Config::App->new;
+
+By default, with no parameters passed, the
+constructor assumes the initial configuration file is, in order, one of the
+following:
+
+=for :list
+* C<config/app.yaml>
+* C<etc/config.yaml>
+* C<etc/conf.yaml>
+* C<etc/app.yaml>
+* C<config.yaml>
+* C<conf.yaml>
+* C<app.yaml>
 
 You can stipulate an initial configuration file to the constructor:
 
-    # looks for initial conf file "settings/conf.json" at or above cwd
+    # seeks initial conf file "settings/conf.json" at or above cwd
     my $conf = Config::App->new('settings/conf.json');
 
 You can also alternatively set an enviornment variable that will identify the
 initial configuration file:
 
-    # looks for initial conf file "conf/settings.yaml" at or above cwd
+    # seeks initial conf file "conf/settings.yaml" at or above cwd
     $ENV{CONFIGAPPINIT} = 'conf/settings.yaml';
     my $conf = Config::App->new;
 
