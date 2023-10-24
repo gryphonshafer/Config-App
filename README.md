@@ -4,7 +4,7 @@ Config::App - Cascading merged application configuration
 
 # VERSION
 
-version 1.15
+version 1.16
 
 [![test](https://github.com/gryphonshafer/Config-App/workflows/test/badge.svg)](https://github.com/gryphonshafer/Config-App/actions?query=workflow%3Atest)
 [![codecov](https://codecov.io/gh/gryphonshafer/Config-App/graph/badge.svg)](https://codecov.io/gh/gryphonshafer/Config-App)
@@ -15,14 +15,14 @@ version 1.15
     use Config::App 'lib';
     use Config::App ();
 
-    # seeks initial conf file "config/app.yaml" (then others) at or above cwd
+    # seeks initial conf file "config/app.yaml" (then others)
     my $conf = Config::App->new;
 
-    # seeks initial conf file "conf/settings.yaml" at or above cwd
+    # seeks initial conf file "conf/settings.yaml"
     $ENV{CONFIGAPPINIT} = 'conf/settings.yaml';
     my $conf2 = Config::App->new;
 
-    # seeks initial conf file "settings/conf.yaml" at or above cwd
+    # seeks initial conf file "settings/conf.yaml"
     my $conf3 = Config::App->new('settings/conf.yaml');
 
     # pulls initial conf file from URL
@@ -39,6 +39,9 @@ version 1.15
     my $new_full_conf_as_data_structure = $conf->conf({
         change => { some => { conf => 1138 } }
     });
+
+    # same as new() except will silently return undef on failure
+    my $conf5 = Config::App->find;
 
 # DESCRIPTION
 
@@ -202,12 +205,11 @@ The following are the supported methods of this module:
 The constructor will return an object that can be used to query and alter the
 derived cascaded configuration.
 
-    # seeks initial conf file "config/app.yaml" (then others) at or above cwd
+    # seeks initial conf file "config/app.yaml" (then others)
     my $conf = Config::App->new;
 
-By default, with no parameters passed, the
-constructor assumes the initial configuration file is, in order, one of the
-following:
+By default, with no parameters passed, the constructor assumes the initial
+configuration file is, in order, one of the following:
 
 - `config/app.yaml`
 - `etc/config.yaml`
@@ -219,13 +221,13 @@ following:
 
 You can stipulate an initial configuration file to the constructor:
 
-    # seeks initial conf file "settings/conf.json" at or above cwd
+    # seeks initial conf file "settings/conf.json"
     my $conf = Config::App->new('settings/conf.json');
 
 You can also alternatively set an enviornment variable that will identify the
 initial configuration file:
 
-    # seeks initial conf file "conf/settings.yaml" at or above cwd
+    # seeks initial conf file "conf/settings.yaml"
     $ENV{CONFIGAPPINIT} = 'conf/settings.yaml';
     my $conf = Config::App->new;
 
@@ -239,6 +241,11 @@ the constructor.
 
     my $conf_0 = Config::App->new( 'file_0.yaml', 1 );
     my $conf_1 = Config::App->new( 'file_1.yaml', 1 );
+
+## find
+
+This is the same thing as `new()` except if unable to find a configuration
+file, it will silently return `undef`.
 
 ## get
 
