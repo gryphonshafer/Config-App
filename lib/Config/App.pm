@@ -18,7 +18,7 @@ use YAML::XS ();
 
 $Carp::Internal{ (__PACKAGE__) }++;
 
-sub locate_root_config {
+sub _locate_root_config {
     my ($config_location) = @_;
     if ($config_location) {
         return undef, $config_location if ( URI->new($config_location)->scheme );
@@ -60,7 +60,7 @@ sub locate_root_config {
     return ( length $root_dir and length $config_file ) ? ( $root_dir, $config_file ) : undef;
 }
 
-sub add_to_inc {
+sub _add_to_inc {
     my ( $root_dir, @libs ) = @_;
 
     for my $lib ( map { $root_dir . '/' . $_ } @libs ) {
@@ -75,7 +75,7 @@ sub import {
 
     my ( $root_dir, $config_file, @libs );
     for ( @_, undef ) {
-        my @locate_root_config = locate_root_config($_);
+        my @locate_root_config = _locate_root_config($_);
 
         unless ( $locate_root_config[0] ) {
             push( @libs, $_ );
@@ -87,7 +87,7 @@ sub import {
 
     die "Config::App unable to locate configuration file\n" unless ($config_file);
 
-    add_to_inc( $root_dir, ( @libs || 'lib' ) ) if $root_dir;
+    _add_to_inc( $root_dir, ( @libs || 'lib' ) ) if $root_dir;
 
     my $error = do {
         local $@;
@@ -123,7 +123,7 @@ sub import {
         $singleton = $self unless $no_singleton;
 
         if ( my $libs = $self->get('libs') ) {
-           add_to_inc(
+           _add_to_inc(
                 $self->root_dir,
                 ( ref $libs eq 'ARRAY' ) ? @$libs : $libs,
             );
@@ -213,7 +213,7 @@ sub conf {
 
 sub _process_location {
     my ($input) = @_;
-    my ( $root_dir, $config_file ) = locate_root_config( $input->{location} );
+    my ( $root_dir, $config_file ) = _locate_root_config( $input->{location} );
 
     my $include = join( '/', grep { defined and $_ ne '/' } $root_dir, $config_file );
     my $sources = [ grep { defined } @{ $input->{sources} || [] }, $input->{location} ];
@@ -476,15 +476,14 @@ __END__
 
 =head1 DESCRIPTION
 
-The intent of this module is to provide an all-purpose enviornment setup helper
-and configuration fetcher that allows configuration files to include other files
-and "cascade" or merge bits of these files into the "active" configuration
-based on server name, user account name the process is running under, and/or
-enviornment variable flag. The goal being that a single unified configuration
-can be built from a set of files (real files or URLs) and slices of that
-configuration can be automatically used as the active configuration in any
-enviornment. Thus, you can write configuration files once and never need to
-change them based on the location to which the application is being deployed.
+The intent of this module is to provide for projects (within a directory tree)
+configuration fetcher and merger functionality that supports configuration files
+that may include other files and "cascade" or merge bits of these files into an
+"active" configuration based on server name, user account name the process is
+running under, and/or enviornment variable flag. The goal being that a single
+unified configuration can be built from a set of files (real files or URLs) and
+slices of that configuration can be used as the active configuration in any
+enviornment.
 
 You can write configuration files in YAML or JSON. These files can be local
 or served through some sort of URL.
@@ -570,12 +569,13 @@ source configuration file  overwriting data in any included files, use
 =head2 Configuration File Finding
 
 When a file is included, it's searched for starting at the current directory
-of the program or application, as determined by L<FindBin>. If the file is not
-found, it will be looked for one directory level above, and so on and so on,
-until it's either found or we get to the top directory level. This means that
-in a given application with several nested directories of varying depth and
-programs within each, you can use a single configuration file and not have to
-hard-code paths into each program.
+of the program or application, as determined by L<FindBin> initially; and if
+that failes, the current working directory. If the file is not found, it will be
+looked for one directory level above, and so on and so on, until it's either
+found or we get to the top directory level. This means that in a given
+application with several nested directories of varying depth and programs within
+each, you can use a single configuration file and not have to hard-code paths
+into each program.
 
 At any point, either in the C<new()> constructor or as values to "include"
 keys, you can stipulate URLs. If any of the configuration returned from
@@ -725,6 +725,24 @@ configuration.
     my $new_full_conf_as_data_structure = $conf->conf({
         change => { some => { conf => 1138 } }
     });
+
+=head2 root_dir
+
+This is a shortcut to:
+
+    $conf->get( qw( config_app root_dir ) );
+
+=head2 includes
+
+This is a shortcut to:
+
+    $conf->get( qw( config_app includes ) );
+
+=head2 deimport
+
+If for whatever reason you need to completely remove Config::App and its data,
+perhaps for a use case where you need to C<use> it a second time as if it was
+the first time, this method attempts to set that option up.
 
 =head1 LIBRARY DIRECTORY INJECTION
 

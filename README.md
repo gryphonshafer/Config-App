@@ -4,7 +4,7 @@ Config::App - Cascading merged application configuration
 
 # VERSION
 
-version 1.16
+version 1.17
 
 [![test](https://github.com/gryphonshafer/Config-App/workflows/test/badge.svg)](https://github.com/gryphonshafer/Config-App/actions?query=workflow%3Atest)
 [![codecov](https://codecov.io/gh/gryphonshafer/Config-App/graph/badge.svg)](https://codecov.io/gh/gryphonshafer/Config-App)
@@ -45,15 +45,14 @@ version 1.16
 
 # DESCRIPTION
 
-The intent of this module is to provide an all-purpose enviornment setup helper
-and configuration fetcher that allows configuration files to include other files
-and "cascade" or merge bits of these files into the "active" configuration
-based on server name, user account name the process is running under, and/or
-enviornment variable flag. The goal being that a single unified configuration
-can be built from a set of files (real files or URLs) and slices of that
-configuration can be automatically used as the active configuration in any
-enviornment. Thus, you can write configuration files once and never need to
-change them based on the location to which the application is being deployed.
+The intent of this module is to provide for projects (within a directory tree)
+configuration fetcher and merger functionality that supports configuration files
+that may include other files and "cascade" or merge bits of these files into an
+"active" configuration based on server name, user account name the process is
+running under, and/or enviornment variable flag. The goal being that a single
+unified configuration can be built from a set of files (real files or URLs) and
+slices of that configuration can be used as the active configuration in any
+enviornment.
 
 You can write configuration files in YAML or JSON. These files can be local
 or served through some sort of URL.
@@ -139,12 +138,13 @@ source configuration file  overwriting data in any included files, use
 ## Configuration File Finding
 
 When a file is included, it's searched for starting at the current directory
-of the program or application, as determined by [FindBin](https://metacpan.org/pod/FindBin). If the file is not
-found, it will be looked for one directory level above, and so on and so on,
-until it's either found or we get to the top directory level. This means that
-in a given application with several nested directories of varying depth and
-programs within each, you can use a single configuration file and not have to
-hard-code paths into each program.
+of the program or application, as determined by [FindBin](https://metacpan.org/pod/FindBin) initially; and if
+that failes, the current working directory. If the file is not found, it will be
+looked for one directory level above, and so on and so on, until it's either
+found or we get to the top directory level. This means that in a given
+application with several nested directories of varying depth and programs within
+each, you can use a single configuration file and not have to hard-code paths
+into each program.
 
 At any point, either in the `new()` constructor or as values to "include"
 keys, you can stipulate URLs. If any of the configuration returned from
@@ -293,6 +293,24 @@ configuration.
     my $new_full_conf_as_data_structure = $conf->conf({
         change => { some => { conf => 1138 } }
     });
+
+## root\_dir
+
+This is a shortcut to:
+
+    $conf->get( qw( config_app root_dir ) );
+
+## includes
+
+This is a shortcut to:
+
+    $conf->get( qw( config_app includes ) );
+
+## deimport
+
+If for whatever reason you need to completely remove Config::App and its data,
+perhaps for a use case where you need to `use` it a second time as if it was
+the first time, this method attempts to set that option up.
 
 # LIBRARY DIRECTORY INJECTION
 
