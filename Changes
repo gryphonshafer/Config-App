@@ -1,6 +1,7 @@
 Revision history for Config::App
 
 {{$NEXT}}
+        - Perl minimum version align
 
 1.17      2023-11-06 18:21:24-08:00 America/Los_Angeles
         - Refactor to allow for cwd-based path-to-conf parsing
