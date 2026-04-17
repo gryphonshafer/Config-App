@@ -148,7 +148,7 @@ sub import {
             }
         }
 
-        delete $INC{ join( '/', split /(?:'|::)/, __PACKAGE__ ) . '.pm' };
+        delete $INC{ join( '/', split qr{(?:'|::)}, __PACKAGE__ ) . '.pm' };
 
         return;
     }
