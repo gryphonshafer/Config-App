@@ -1,6 +1,7 @@
 Revision history for Config::App
 
 {{$NEXT}}
+        - Support preinclude embedded in a section
 
 1.19      2025-06-13 10:24:47-07:00 America/Los_Angeles
         - Add security policy as per CPANSec recommendation
